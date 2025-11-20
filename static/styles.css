@@ -1,0 +1,282 @@
+/* Overall page */
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f2f2f7; /* iOS grey background */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               "Segoe UI", system-ui, sans-serif;
+  color: #111827;
+}
+
+/* Center shell */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;      /* horizontal center */
+  align-items: flex-start;      /* pinned towards top */
+  padding: 60px 16px 24px;
+  box-sizing: border-box;
+}
+
+/* Card */
+
+.app-card {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px 24px 20px;
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.10),
+    0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Header blocks */
+
+.app-header {
+  margin-bottom: 20px;
+}
+
+.app-title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Top nav */
+
+.app-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.nav-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+}
+
+.nav-tabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 3px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  align-items: center;
+  overflow: auto;
+}
+
+.nav-tab {
+  border: none;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nav-tab.active {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12);
+}
+
+/* View sections (tabbed views) */
+
+.view-section {
+  display: none;
+}
+
+.view-section.visible {
+  display: block;
+}
+
+/* Upload form */
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+.upload-row {
+  width: 100%;
+}
+
+/* Custom file input */
+
+.file-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #f5f5f7;
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.file-input {
+  display: none; /* hide the ugly native element */
+}
+
+.file-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #e5f0ff;
+  color: #0055cc;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.08s ease;
+}
+
+.file-btn:hover {
+  background: #d6e7ff;
+}
+
+.file-btn:active {
+  transform: translateY(1px);
+}
+
+.file-text {
+  flex: 1 1 auto;
+  font-size: 13px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Primary button */
+
+.primary-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #007aff;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.08s ease,
+              box-shadow 0.15s ease;
+  box-shadow: 0 6px 14px rgba(0, 122, 255, 0.35);
+  align-self: flex-end;
+}
+
+.primary-btn:hover {
+  background: #0062d6;
+}
+
+.primary-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 8px rgba(0, 122, 255, 0.35);
+}
+
+/* File list */
+
+.file-section {
+  border-top: 1px solid #f3f4f6;
+  padding-top: 18px;
+}
+
+.section-title {
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.file-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+
+.file-link {
+  font-size: 14px;
+  color: #2563eb;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.file-link:hover {
+  text-decoration: underline;
+}
+
+.file-empty {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.history-placeholder {
+  padding: 12px 0;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* Layout tweak for wider screens */
+
+@media (min-width: 640px) {
+  .upload-form {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .upload-row {
+    flex: 1 1 auto;
+  }
+
+  .primary-btn {
+    flex: 0 0 auto;
+  }
+}
+
+/* Mobile tweaks */
+
+@media (max-width: 600px) {
+  .app-card {
+    padding: 20px 16px 18px;
+    border-radius: 20px;
+  }
+
+  .app-title {
+    font-size: 22px;
+  }
+}

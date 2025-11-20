@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Phone Transfer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="app-shell">
+      <div class="app-card">
+
+        <!-- Top nav -->
+        <nav class="app-nav">
+          <div class="nav-title">TRANSFER HUB</div>
+          <div class="nav-tabs">
+            <button class="nav-tab active" data-section="send">Share to iPhone</button>
+            <button class="nav-tab" data-section="available">Available files</button>
+            <button class="nav-tab" data-section="history">Sent / history</button>
+          </div>
+        </nav>
+
+        <!-- SECTION: send -->
+        <section class="view-section visible" data-section="send">
+          <header class="app-header">
+            <h1 class="app-title">Share to iPhone</h1>
+            <p class="app-subtitle">
+              Choose a file on your laptop, then open this page on your iPhone to download it.
+            </p>
+          </header>
+
+          <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
+            <div class="upload-row">
+              <div class="file-control">
+                <!-- real file input, hidden via CSS -->
+                <input type="file" name="file" id="file-input" class="file-input" required>
+
+                <!-- pretty trigger button -->
+                <button type="button" class="file-btn" id="file-btn">
+                  Choose file
+                </button>
+
+                <!-- filename display -->
+                <span class="file-text" id="file-text">
+                  No file chosen
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Upload</button>
+          </form>
+        </section>
+
+        <!-- SECTION: available files -->
+        <section class="view-section" data-section="available">
+          <header class="app-header">
+            <h1 class="app-title">Available files</h1>
+            <p class="app-subtitle">
+              Files currently stored on this laptop and ready to download from your phone.
+            </p>
+          </header>
+
+          <section class="file-section">
+            <h2 class="section-title">Files</h2>
+            <ul class="file-list">
+              {% for f in files %}
+                <li class="file-item">
+                  <span class="file-dot"></span>
+                  <a href="/files/{{f}}" class="file-link">{{f}}</a>
+                </li>
+              {% else %}
+                <li class="file-empty">No files uploaded yet.</li>
+              {% endfor %}
+            </ul>
+          </section>
+        </section>
+
+        <!-- SECTION: history (placeholder) -->
+        <section class="view-section" data-section="history">
+          <header class="app-header">
+            <h1 class="app-title">Sent / History</h1>
+            <p class="app-subtitle">
+              Later we can track which files were sent. For now everything appears under
+              “Available files”.
+            </p>
+          </header>
+
+          <div class="history-placeholder">
+            <p>No history tracking yet. All files are still shown in Available files.</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- JS file in /static -->
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
