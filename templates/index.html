@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>AirFree - Wireless File Transfer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script>
+    (function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tab = urlParams.get('tab') || 'send';
+      sessionStorage.setItem('activeTab', tab);
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <div class="app-card">
+      <nav class="app-nav">
+        <div class="nav-title">AIRFREE</div>
+        <div class="nav-tabs">
+          <button class="nav-tab" data-section="send" id="tab-send">Share Files</button>
+          <button class="nav-tab" data-section="available" id="tab-available">Available files</button>
+          <button class="nav-tab" data-section="history" id="tab-history">Sent / history</button>
+        </div>
+      </nav>
+
+      <section class="view-section" data-section="send" id="section-send">
+        <header class="app-header">
+          <h1 class="app-title">Share Files</h1>
+          <p class="app-subtitle">Choose a file on your laptop, then open this page on your phone or any device to
+            download it.</p>
+        </header>
+        <div class="qr-section">
+          <div class="qr-container">
+            <img src="/qr" alt="QR Code" class="qr-image">
+          </div>
+          <div class="connection-info">
+            <div class="info-title">📱 Connect from Any Device</div>
+            <div class="info-text"><strong>Scan QR code</strong> with your phone camera, or visit:</div>
+            <div class="ip-address">http://{{ local_ip }}:5000</div>
+          </div>
+        </div>
+        <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
+          <div class="upload-row">
+            <div class="file-control">
+              <input type="file" name="file" id="file-input" class="file-input" required>
+              <button type="button" class="file-btn" id="file-btn">Choose file</button>
+              <span class="file-text" id="file-text">No file chosen</span>
+            </div>
+          </div>
+          <button type="submit" class="primary-btn">Upload</button>
+        </form>
+      </section>
+
+      <section class="view-section" data-section="available" id="section-available">
+        <header class="app-header">
+          <h1 class="app-title">Available files</h1>
+          <p class="app-subtitle">Files currently stored on this laptop and ready to download from any device.</p>
+        </header>
+        <section class="file-section">
+          <h2 class="section-title">Files</h2>
+          <ul class="file-list">
+            {% for f in files %}
+            <li class="file-item">
+              {% if f.is_image %}<span class="file-icon">🖼️</span>
+              {% elif 'pdf' in f.type %}<span class="file-icon">📄</span>
+              {% elif 'video' in f.type %}<span class="file-icon">🎥</span>
+              {% elif 'audio' in f.type %}<span class="file-icon">🎵</span>
+              {% elif 'zip' in f.type or 'compressed' in f.type %}<span class="file-icon">📦</span>
+              {% else %}<span class="file-icon">📎</span>{% endif %}
+              <div class="file-info">
+                <a href="/files/{{f.name}}" class="file-link">{{f.name}}</a>
+                <div class="file-meta">
+                  <span class="file-size">{{f.size}}</span>
+                  <span class="file-date">{{f.modified}}</span>
+                </div>
+              </div>
+              {% if f.is_image %}<img src="/preview/{{f.name}}" alt="{{f.name}}" class="file-thumbnail"
+                onclick="openPreview('/preview/{{f.name}}', '{{f.name}}')">{% endif %}
+              <div class="file-actions">
+                <button class="action-btn details-btn" data-filename="{{f.name}}">Details</button>
+                <button class="action-btn delete-btn" data-filename="{{f.name}}">Delete</button>
+              </div>
+            </li>
+            {% else %}
+            <li class="file-empty">No files uploaded yet.</li>
+            {% endfor %}
+          </ul>
+        </section>
+      </section>
+
+      <section class="view-section" data-section="history" id="section-history">
+        <header class="app-header">
+          <h1 class="app-title">Sent / History</h1>
+          <p class="app-subtitle">Later we can track which files were sent. For now everything appears under "Available
+            files".</p>
+        </header>
+        <div class="history-placeholder">
+          <p>No history tracking yet. All files are still shown in Available files.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="preview-modal" class="modal" onclick="closePreview()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modal-image">
+    <div id="modal-caption"></div>
+  </div>
+
+  <div id="details-modal" class="modal" onclick="closeDetails()">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>File Details</h2>
+        <span class="modal-close" onclick="closeDetails()">&times;</span>
+      </div>
+      <div class="modal-body" id="details-content"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+
+</html>

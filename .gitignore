@@ -1,0 +1,13 @@
+# Ignore uploads directory (user files / binaries / large files)
+uploads/
+
+# Python virtual env
+.venv/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# OS files
+Thumbs.db
+desktop.ini
