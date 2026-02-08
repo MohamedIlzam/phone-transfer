@@ -30,6 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const fileInput = document.getElementById("file-input");
   const fileBtn = document.getElementById("file-btn");
   const fileText = document.getElementById("file-text");
+  const uploadBtn = document.getElementById("upload-btn");
+  const progressContainer = document.getElementById("progress-container");
+  const progressFill = document.getElementById("progress-fill");
+  const progressText = document.getElementById("progress-text");
 
   if (fileInput && fileBtn && fileText) {
     fileBtn.addEventListener("click", () => {
@@ -43,6 +47,140 @@ document.addEventListener("DOMContentLoaded", () => {
         fileText.textContent = "No file chosen";
       }
     });
+  }
+
+  const uploadForm = document.querySelector('.upload-form');
+  if (uploadForm) {
+    uploadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert("Please choose a file first.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Reset and show progress bar
+      progressContainer.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressText.innerText = '0%';
+      uploadBtn.disabled = true;
+      uploadBtn.innerText = 'Uploading...';
+
+      // Generate unique ID for this transfer
+      const transferId = Math.random().toString(36).substring(7);
+      let lastReportTime = 0;
+
+      const xhr = new XMLHttpRequest();
+
+      // Progress listener
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          progressFill.style.width = percentComplete + '%';
+          progressText.innerText = percentComplete + '%';
+
+          // Report progress to server (throttled)
+          const now = Date.now();
+          if (now - lastReportTime > 1000 || percentComplete === 100) {
+            fetch('/api/progress', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transferId: transferId,
+                filename: file.name,
+                progress: percentComplete
+              })
+            }).catch(() => { }); // Ignore errors in reporting
+            lastReportTime = now;
+          }
+        }
+      });
+
+      // Completion listener
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          // Success - wait a brief moment to show 100% then redirect
+          setTimeout(() => {
+            window.location.href = "/?tab=available";
+          }, 500);
+        } else {
+          alert("Upload failed. Please try again.");
+          resetUploadUI();
+        }
+      });
+
+      // Error listener
+      xhr.addEventListener('error', () => {
+        alert("An error occurred during payment.");
+        resetUploadUI();
+      });
+
+      xhr.open('POST', '/upload');
+      xhr.send(formData);
+    });
+  }
+
+  function resetUploadUI() {
+    progressContainer.style.display = 'none';
+    progressFill.style.width = '0%';
+    progressText.innerText = '0%';
+    uploadBtn.disabled = false;
+    uploadBtn.innerText = 'Upload';
+  }
+
+  // Poll for incoming transfers
+  setInterval(async () => {
+    try {
+      const response = await fetch('/api/status');
+      const transfers = await response.json();
+      updateIncomingTransfersUI(transfers);
+    } catch (e) {
+      console.error("Error polling status:", e);
+    }
+  }, 2000);
+
+  function updateIncomingTransfersUI(transfers) {
+    let container = document.getElementById('incoming-transfers-container');
+
+    // Create container if it doesn't exist (append to body or specific section)
+    if (!container && transfers.length > 0) {
+      const shell = document.querySelector('.app-shell .app-card');
+      if (shell) {
+        container = document.createElement('div');
+        container.id = 'incoming-transfers-container';
+        container.className = 'incoming-transfers-container';
+        shell.insertBefore(container, shell.firstChild);
+      }
+    }
+
+    if (!container) return;
+
+    if (transfers.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+
+    // Simple render: recreate list
+    container.innerHTML = `
+        <div class="incoming-title">⬇️ Receiving Files...</div>
+        ${transfers.map(t => `
+            <div class="incoming-item">
+                <div class="incoming-info">
+                    <span class="incoming-name">${t.filename}</span>
+                    <span class="incoming-ip">from ${t.ip}</span>
+                </div>
+                <div class="incoming-progress-bar">
+                    <div class="incoming-progress-fill" style="width: ${t.progress}%"></div>
+                </div>
+            </div>
+        `).join('')}
+      `;
   }
 
   document.addEventListener('click', (e) => {

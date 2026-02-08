@@ -10,6 +10,19 @@ app = Flask(__name__)
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# Store active transfers: {transfer_id: {'filename': ..., 'progress': ..., 'ip': ..., 'timestamp': ...}}
+active_transfers = {}
+
+def cleanup_transfers():
+    """Remove stale transfers (older than 30 seconds)"""
+    now = datetime.now().timestamp()
+    to_remove = []
+    for tid, data in active_transfers.items():
+        if now - data['timestamp'] > 30:
+            to_remove.append(tid)
+    for tid in to_remove:
+        del active_transfers[tid]
+
 def get_local_ip():
     """Get the local IP address of this machine"""
     try:
@@ -125,6 +138,26 @@ def file_details(filename):
         return jsonify(metadata)
     else:
         return jsonify({"error": "File not found"}), 404
+
+@app.route("/api/progress", methods=["POST"])
+def report_progress():
+    """Receive progress updates from uploaders"""
+    data = request.json
+    transfer_id = data.get('transferId')
+    if transfer_id:
+        active_transfers[transfer_id] = {
+            'filename': data.get('filename'),
+            'progress': data.get('progress'),
+            'ip': request.remote_addr,
+            'timestamp': datetime.now().timestamp()
+        }
+    return jsonify({"success": True})
+
+@app.route("/api/status")
+def get_status():
+    """Get all active transfers"""
+    cleanup_transfers()
+    return jsonify(list(active_transfers.values()))
 
 if __name__ == "__main__":
     # host=0.0.0.0 so other devices on your Wi-Fi (phone, tablet, etc.) can reach it

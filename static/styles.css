@@ -541,3 +541,98 @@ body {
     height: 50px;
   }
 }
+
+/* Progress Bar */
+
+.progress-container {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  width: 0%;
+  transition: width 0.1s linear;
+  border-radius: 999px;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: right;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Incoming Transfers */
+.incoming-transfers-container {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.incoming-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.incoming-item {
+  margin-bottom: 12px;
+}
+
+.incoming-item:last-child {
+  margin-bottom: 0;
+}
+
+.incoming-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.incoming-name {
+  font-weight: 600;
+  color: #1e3a8a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.incoming-ip {
+  color: #60a5fa;
+  font-size: 12px;
+}
+
+.incoming-progress-bar {
+  height: 6px;
+  background: #dbeafe;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.incoming-progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 99px;
+}
