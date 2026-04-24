@@ -1,31 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const activeTab = sessionStorage.getItem('activeTab') || 'send';
-  const initialTab = document.getElementById(`tab-${activeTab}`);
-  const initialSection = document.getElementById(`section-${activeTab}`);
-
-  if (initialTab && initialSection) {
-    initialTab.classList.add('active');
-    initialSection.classList.add('visible');
-  }
-
-  sessionStorage.removeItem('activeTab');
-  if (window.location.search) {
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-
-  const tabs = document.querySelectorAll(".nav-tab");
-  const sections = document.querySelectorAll(".view-section");
-
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      const target = tab.dataset.section;
-      tabs.forEach((t) => t.classList.remove("active"));
-      tab.classList.add("active");
-      sections.forEach((sec) => {
-        sec.classList.toggle("visible", sec.dataset.section === target);
-      });
-    });
-  });
+  // Navigation status pulsing (optional logic if needed beyond CSS)
+  
+  // File upload logic
 
   const fileInput = document.getElementById("file-input");
   const fileBtn = document.getElementById("file-btn");
@@ -105,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (xhr.status >= 200 && xhr.status < 300) {
           // Success - wait a brief moment to show 100% then redirect
           setTimeout(() => {
-            window.location.href = "/?tab=available";
+            window.location.href = "/send";
           }, 500);
         } else {
           alert("Upload failed. Please try again.");

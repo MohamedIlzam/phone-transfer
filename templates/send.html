@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}AirFree - Send Files{% endblock %}
+
+{% block content %}
+<header class="app-header">
+    <div class="header-with-back">
+        <a href="/" class="back-link">← Back</a>
+        <h1 class="app-title">Send Files</h1>
+    </div>
+    <p class="app-subtitle">Upload files here, then show the QR code to the receiver.</p>
+</header>
+
+<div class="qr-section">
+    <div class="qr-container">
+        <img src="/qr" alt="QR Code" class="qr-image">
+    </div>
+    <div class="connection-info">
+        <div class="info-title">📱 Receiver Scans This</div>
+        <div class="info-text">Open this page on the <strong>receiving device</strong> by scanning, or visit:</div>
+        <div class="ip-address">http://{{ local_ip }}:5000/receive</div>
+    </div>
+</div>
+
+<form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
+    <div class="upload-row">
+        <div class="file-control">
+            <input type="file" name="file" id="file-input" class="file-input" required>
+            <button type="button" class="file-btn" id="file-btn">Choose file</button>
+            <span class="file-text" id="file-text">No file chosen</span>
+        </div>
+        <div id="progress-container" class="progress-container" style="display: none;">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div id="progress-text" class="progress-text">0%</div>
+        </div>
+    </div>
+    <button type="submit" class="primary-btn" id="upload-btn">Upload</button>
+</form>
+
+<section class="file-section">
+    <h2 class="section-title">Manage Shared Files</h2>
+    <ul class="file-list">
+        {% for f in files %}
+        <li class="file-item">
+            {% if f.is_image %}<span class="file-icon">🖼️</span>
+            {% elif 'pdf' in f.type %}<span class="file-icon">📄</span>
+            {% elif 'video' in f.type %}<span class="file-icon">🎥</span>
+            {% elif 'audio' in f.type %}<span class="file-icon">🎵</span>
+            {% elif 'zip' in f.type or 'compressed' in f.type %}<span class="file-icon">📦</span>
+            {% else %}<span class="file-icon">📎</span>{% endif %}
+            <div class="file-info">
+                <span class="file-name-static">{{f.name}}</span>
+                <div class="file-meta">
+                    <span class="file-size">{{f.size}}</span>
+                    <span class="file-date">{{f.modified}}</span>
+                </div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn details-btn" data-filename="{{f.name}}">Details</button>
+                <button class="action-btn delete-btn" data-filename="{{f.name}}">Delete</button>
+            </div>
+        </li>
+        {% else %}
+        <li class="file-empty">No files uploaded yet.</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}
