@@ -63,18 +63,29 @@ def get_file_metadata(filename):
 
 @app.route("/")
 def index():
+    return render_template("index.html")
+
+@app.route("/send")
+def send():
     files = os.listdir(UPLOAD_FOLDER)
     file_metadata = [get_file_metadata(f) for f in files]
     file_metadata = [f for f in file_metadata if f is not None]
-    
     local_ip = get_local_ip()
-    return render_template("index.html", files=file_metadata, local_ip=local_ip)
+    return render_template("send.html", files=file_metadata, local_ip=local_ip)
+
+@app.route("/receive")
+def receive():
+    files = os.listdir(UPLOAD_FOLDER)
+    file_metadata = [get_file_metadata(f) for f in files]
+    file_metadata = [f for f in file_metadata if f is not None]
+    return render_template("receive.html", files=file_metadata)
 
 @app.route("/qr")
 def qr_code():
-    """Generate QR code for the local server URL"""
+    """Generate QR code for the receiver URL"""
     local_ip = get_local_ip()
-    url = f"http://{local_ip}:5000"
+    # Receiver should scan and go directly to /receive
+    url = f"http://{local_ip}:5000/receive"
     
     # Generate QR code
     qr = qrcode.QRCode(version=1, box_size=10, border=2)
@@ -103,8 +114,8 @@ def upload():
     if file:
         filename = file.filename
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        # Redirect to homepage with tab parameter to show available files
-        return redirect("/?tab=available")
+        # Redirect back to sender page
+        return redirect("/send")
 
     return "Upload failed", 400
 

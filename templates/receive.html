@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}AirFree - Receive Files{% endblock %}
+
+{% block content %}
+<header class="app-header">
+    <div class="header-with-back">
+        <a href="/" class="back-link">← Back</a>
+        <h1 class="app-title">Available Files</h1>
+    </div>
+    <p class="app-subtitle">Tap a file to download it to your device.</p>
+</header>
+
+<section class="file-section">
+    <ul class="file-list">
+        {% for f in files %}
+        <li class="file-item clickable" onclick="window.location.href='/files/{{f.name}}'">
+            {% if f.is_image %}<span class="file-icon">🖼️</span>
+            {% elif 'pdf' in f.type %}<span class="file-icon">📄</span>
+            {% elif 'video' in f.type %}<span class="file-icon">🎥</span>
+            {% elif 'audio' in f.type %}<span class="file-icon">🎵</span>
+            {% elif 'zip' in f.type or 'compressed' in f.type %}<span class="file-icon">📦</span>
+            {% else %}<span class="file-icon">📎</span>{% endif %}
+            <div class="file-info">
+                <a href="/files/{{f.name}}" class="file-link" onclick="event.stopPropagation()">{{f.name}}</a>
+                <div class="file-meta">
+                    <span class="file-size">{{f.size}}</span>
+                    <span class="file-date">{{f.modified}}</span>
+                </div>
+            </div>
+            {% if f.is_image %}
+            <img src="/preview/{{f.name}}" alt="{{f.name}}" class="file-thumbnail"
+                onclick="event.stopPropagation(); openPreview('/preview/{{f.name}}', '{{f.name}}')">
+            {% endif %}
+            <div class="file-actions">
+                <button class="action-btn details-btn" data-filename="{{f.name}}" onclick="event.stopPropagation();">Details</button>
+            </div>
+        </li>
+        {% else %}
+        <li class="file-empty">No files available yet. Ask the sender to upload some!</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<div class="receiver-footer">
+    <p>Refresh this page if new files are uploaded.</p>
+    <button class="secondary-btn" onclick="location.reload()">Refresh List</button>
+</div>
+{% endblock %}

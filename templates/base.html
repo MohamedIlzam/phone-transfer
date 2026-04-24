@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>{% block title %}AirFree - Wireless File Transfer{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+
+<body>
+  <div class="app-shell">
+    <div class="app-card">
+      <nav class="app-nav">
+        <a href="/" class="nav-title" style="text-decoration: none; color: inherit;">AIRFREE</a>
+        <div class="nav-status" id="nav-status">
+            <span class="status-dot"></span>
+            <span class="status-text">Local Network Only</span>
+        </div>
+      </nav>
+
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <div id="preview-modal" class="modal" onclick="closePreview()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modal-image">
+    <div id="modal-caption"></div>
+  </div>
+
+  <div id="details-modal" class="modal" onclick="closeDetails()">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>File Details</h2>
+        <span class="modal-close" onclick="closeDetails()">&times;</span>
+      </div>
+      <div class="modal-body" id="details-content"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+
+</html>
